@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Paste Image and Preview</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin: 20px;
+      }
+      .preview {
+        margin-top: 20px;
+      }
+      img {
+        max-width: 100%;
+        height: auto;
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        padding: 5px;
+        width: 40vw;
+        height: 80vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Paste Image and Preview</h1>
+    <p>Press <strong>Ctrl+V</strong> to paste an image here.</p>
+    <div class="preview">
+      <p id="previewText">No image pasted yet.</p>
+      <img id="imagePreview" style="display: none" />
+    </div>
+
+    <script>
+      const previewText = document.getElementById("previewText");
+      const imagePreview = document.getElementById("imagePreview");
+
+      // Listen for paste events
+      document.addEventListener("paste", (event) => {
+        const items = event.clipboardData.items; // Get clipboard items
+        for (let item of items) {
+          if (item.type.startsWith("image/")) {
+            const file = item.getAsFile(); // Get image file
+            const reader = new FileReader();
+
+            // When the file is read
+            reader.onload = function (e) {
+              previewText.style.display = "none"; // Hide text
+              imagePreview.style.display = "block"; // Show image
+              imagePreview.src = e.target.result; // Set image source
+            };
+
+            reader.readAsDataURL(file); // Read file as Data URL
+            return; // Exit loop after finding the first image
+          }
+        }
+        alert("No image found in the clipboard!");
+      });
+    </script>
+  </body>
+</html>
